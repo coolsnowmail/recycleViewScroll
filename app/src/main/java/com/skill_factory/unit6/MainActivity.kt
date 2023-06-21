@@ -3,12 +3,14 @@ package com.skill_factory.unit6
 import android.os.Bundle
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.skill_factory.unit6.adapter.ProductAdapter
 import com.skill_factory.unit6.databinding.ActivityMainBinding
 import com.skill_factory.unit6.model.Ad
 import com.skill_factory.unit6.model.Product
-
+import java.text.FieldPosition
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -16,6 +18,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater) //initializing the binding class
         setContentView(binding.root)
+
         val adapter = ProductAdapter()
         adapter.items = arrayListOf(
             Product(
@@ -102,54 +105,63 @@ class MainActivity : AppCompatActivity() {
                 R.drawable.ic_lemon,
                 "Lemon",
                 "Lemons are eaten fresh, and are also used in the manufacture of confectionery and soft drinks, in the liquor and perfume industry."
-            ),
-
             )
+
+        )
 
         binding.recyclerView.adapter = adapter
 
-        var savePositionFirst = 0
-        var savePositionLast = 0
 
-        //Метод который сохраняет текущую позицию скрола
-        fun savePosition() {
-            //your code here
+        binding.up.setOnClickListener {
+            if ((binding.recyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition() == 0) {
+                scrollToSaveLastPosition()
+            } else {
+                scrollToStart()
+            }
+        }
+        binding.save.setOnClickListener { savePosition() }
+        binding.down.setOnClickListener {
+            if ((binding.recyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition() == adapter.itemCount - 1) {
+                scrollToSaveStartPosition()
+            } else {
+                scrollToEnd(adapter.items.size - 1)
+            }
         }
 
-        //Метод который скролит список к началу
-        fun scrollToStart() {
-            //your code here
-        }
 
-        //Скролит к savePositionFirst
-        fun scrollToSaveStartPosition() {
-            //your code here
-        }
-
-        //Скролит к savePositionFirst
-        fun scrollToSaveLastPosition() {
-            //your code here
-        }
-
-        //Метод который скролит список в конец
-        fun scrollToEnd() {
-            //your code here
-        }
-
-        val up = findViewById<ImageView>(R.id.up)
-        val save = findViewById<ImageView>(R.id.save)
-        val down = findViewById<ImageView>(R.id.down)
-
-        up.setOnClickListener {
-            //your code here
-        }
-
-        save.setOnClickListener {
-            //your code here
-        }
-
-        down.setOnClickListener {
-            //your code here
-        }
     }
+
+    var savePositionFirst = 0
+    var savePositionLast = 0
+
+
+    //Метод который сохраняет текущую позицию скрола
+    fun savePosition() {
+        savePositionFirst =
+            (binding.recyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
+        savePositionLast =
+            (binding.recyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
+    }
+
+    //Метод который скролит список к началу
+    fun scrollToStart() {
+        binding.recyclerView.smoothScrollToPosition(0)
+    }
+
+    //Скролит к savePositionFirst
+    fun scrollToSaveStartPosition() {
+        binding.recyclerView.scrollToPosition(savePositionFirst)
+    }
+
+    //Скролит к savePositionFirst
+    fun scrollToSaveLastPosition() {
+        binding.recyclerView.smoothScrollToPosition(savePositionLast)
+    }
+
+    //Метод который скролит список в конец
+    fun scrollToEnd(position: Int) {
+        binding.recyclerView.smoothScrollToPosition(position)
+    }
+
 }
+
