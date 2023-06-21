@@ -5,16 +5,17 @@ import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.skill_factory.unit6.adapter.ProductAdapter
+import com.skill_factory.unit6.databinding.ActivityMainBinding
 import com.skill_factory.unit6.model.Ad
 import com.skill_factory.unit6.model.Product
 
 
 class MainActivity : AppCompatActivity() {
-
+    private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        val recyclerView: RecyclerView = findViewById(R.id.recycler_view)
+        binding = ActivityMainBinding.inflate(layoutInflater) //initializing the binding class
+        setContentView(binding.root)
         val adapter = ProductAdapter()
         adapter.items = arrayListOf(
             Product(
@@ -104,7 +105,9 @@ class MainActivity : AppCompatActivity() {
             ),
 
             )
-        recyclerView.adapter = adapter
+
+        binding.recyclerView.adapter = adapter
+
         var savePositionFirst = 0
         var savePositionLast = 0
 
